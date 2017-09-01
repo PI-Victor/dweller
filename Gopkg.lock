@@ -14,6 +14,12 @@
   version = "v1.0"
 
 [[projects]]
+  name = "github.com/libvirt/libvirt-go"
+  packages = ["."]
+  revision = "664b6d217e029ce5ad3094a8c2202c202b213d06"
+  version = "v3.5.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
@@ -40,6 +46,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "20e06ba7f38ccbb5b6e57e2a3b16bc04ba2d7addd07a371d5a002725661fbc42"
+  inputs-digest = "53b39ce33c2f360a9f8022ba4bc71c6a546594799c01089d714f15d9873a61dd"
   solver-name = "gps-cdcl"
   solver-version = 1
