@@ -25,13 +25,10 @@ type CloudInfra struct {
 
 func newProvider(provider string) (Provider, error) {
 	// NOTE: suffices for now, should account for future providers.
-	p, err := libvirt.NewLibvirtProvider()
-	if err != nil {
-		return nil, err
-	}
-	return p, nil
+	return libvirt.NewLibvirtProvider()
 }
 
+// Up will bring up a new infrastructure.
 func (cf *CloudInfra) Up() error {
 	provider, err := newProvider(cf.Provider)
 	if err != nil {
@@ -43,6 +40,8 @@ func (cf *CloudInfra) Up() error {
 	return nil
 }
 
+// Halt will halt the infrastructure with the options of pausing it or
+// destroying it permanently.
 func (cf *CloudInfra) Halt(delete, pause bool) error {
 	return nil
 }

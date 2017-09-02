@@ -5,10 +5,8 @@ import (
 )
 
 var (
-	defaultDomainName          = "test"
+	defaultDomainName          = "ArmetOS-Infra"
 	defaultMemory              = "1024"
-	defaultVCPU                = libvirtxml.DomainVCPU{Value: 2}
-	defaultDomainOS            = libvirtxml.DomainOS{}
 	defaultAttachedStorageSize = "40GB"
 )
 
@@ -44,5 +42,5 @@ func newDomainVCPU() *libvirtxml.DomainVCPU {
 }
 
 func newDomainCPU() *libvirtxml.DomainCPU {
-	return nil
+	return &libvirtxml.DomainCPU{}
 }
