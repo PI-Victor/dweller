@@ -10,7 +10,7 @@ import (
 // rootCmd is the main command for the CLI.
 var rootCmd = &cobra.Command{
 	Use:   "dw",
-	Short: "dw - A CLI to provision new Coudflavor infrastructure",
+	Short: "dw - A CLI for provisioning a new Cloudflavor infrastructure",
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},

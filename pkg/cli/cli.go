@@ -1,7 +1,10 @@
 package cli
 
 import (
+	"github.com/Sirupsen/logrus"
 	"github.com/spf13/cobra"
+
+	"github.com/cloudflavor/dweller/controller"
 )
 
 var (
@@ -15,37 +18,45 @@ var (
 var UpCommand = &cobra.Command{
 	Use:   "up",
 	Short: "Spin up a simple Cloudflavor infrastructure ",
-	Example: `dw up - Starts a basic Cloudflavor infrastructure with the default provider, libvirt.
-It will provision 3 machines - two workers and a master node.
+	Example: `dw up - Starts a basic Cloudflavor infrastructure with the default
+provider, libvirt. It will provision 3 machines - two workers and a master node.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-
+		newController := controller.NewController()
+		logrus.Infof("the new controller: %#v", newController)
 	},
 }
 
 // NewCommand adds a new instance to an existing infrastructure.
 var NewCommand = &cobra.Command{
 	Use:   "new",
-	Short: "",
+	Short: "Add a new instance to an already running cloudflavor infrastructure",
 	Run: func(cmd *cobra.Command, args []string) {
-
+		newController := controller.NewController()
+		logrus.Infof("the new controller: %#v", newController)
 	},
 }
 
 // DeleteCommand deletes a specified instance from the infrastructure.
 var DeleteCommand = &cobra.Command{
-	Use:   "delete",
-	Short: "",
+	Use: "delete",
+	Short: `Delete a specific instance. Use list to get a list of available
+running instances
+`,
 	Run: func(cmd *cobra.Command, args []string) {
-
+		newController := controller.NewController()
+		logrus.Infof("the new controller: %#v", newController)
 	},
 }
 
+// HaltCommand halts the current running infrastructure. It can use --pause to
+// pause it or --destroy to destroy it permanently.
 var HaltCommand = &cobra.Command{
 	Use:   "halt",
-	Short: "Halt the infrastructure",
+	Short: "Halts the currently running infrastructure",
 	Run: func(cmd *cobra.Command, args []string) {
-
+		newController := controller.NewController()
+		logrus.Infof("the new controller: %#v", newController)
 	},
 }
 
