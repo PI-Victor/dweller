@@ -1,17 +1,18 @@
 package cli
 
 import (
-	"github.com/Sirupsen/logrus"
 	"github.com/spf13/cobra"
 
-	"github.com/cloudflavor/dweller/controller"
+	"github.com/cloudflavor/dweller/pkg/providers"
+	"github.com/cloudflavor/dweller/pkg/providers/config"
 )
 
 var (
-	destroyInfra  bool
-	pauseInfra    bool
-	upInstances   int
-	infraProvider string
+	infraProviderURI string
+	destroyInfra     bool
+	pauseInfra       bool
+	upInstances      int
+	infraProvider    string
 )
 
 // UpCommand provisines a basic cluster infrastructure.
@@ -22,8 +23,8 @@ var UpCommand = &cobra.Command{
 provider, libvirt. It will provision 3 machines - two workers and a master node.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		newController := controller.NewController()
-		logrus.Infof("the new controller: %#v", newController)
+		newInfra := provider.NewInfra(infraProvider)
+		newInfra.Up(&config.Infra{})
 	},
 }
 
@@ -32,8 +33,6 @@ var NewCommand = &cobra.Command{
 	Use:   "new",
 	Short: "Add a new instance to an already running cloudflavor infrastructure",
 	Run: func(cmd *cobra.Command, args []string) {
-		newController := controller.NewController()
-		logrus.Infof("the new controller: %#v", newController)
 	},
 }
 
@@ -44,8 +43,6 @@ var DeleteCommand = &cobra.Command{
 running instances
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		newController := controller.NewController()
-		logrus.Infof("the new controller: %#v", newController)
 	},
 }
 
@@ -55,8 +52,6 @@ var HaltCommand = &cobra.Command{
 	Use:   "halt",
 	Short: "Halts the currently running infrastructure",
 	Run: func(cmd *cobra.Command, args []string) {
-		newController := controller.NewController()
-		logrus.Infof("the new controller: %#v", newController)
 	},
 }
 
@@ -64,17 +59,23 @@ func init() {
 	UpCommand.PersistentFlags().IntVar(
 		&upInstances,
 		"instances",
-		3,
-		"Override the default number (1xMaster & 2xWorkers) of instances to provision",
+		2,
+		"Specify the default number of worker instances to provision",
 	)
 
-	UpCommand.PersistentFlags().
-		StringVar(
-			&infraProvider,
-			"provider",
-			"libvirt",
-			"Override the default (libvirt) provider",
-		)
+	UpCommand.PersistentFlags().StringVar(
+		&infraProvider,
+		"provider",
+		"libvirt",
+		"Specify the provider",
+	)
+
+	UpCommand.PersistentFlags().StringVar(
+		&infraProviderURI,
+		"uri",
+		"qemu:///system",
+		"The URI that the provider should use to connect to",
+	)
 
 	HaltCommand.PersistentFlags().BoolVar(
 		&destroyInfra,
