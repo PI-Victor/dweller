@@ -1,8 +1,6 @@
 package provider
 
 import (
-	"fmt"
-
 	"github.com/cloudflavor/dweller/pkg/providers/config"
 	"github.com/cloudflavor/dweller/pkg/providers/libvirt"
 )
@@ -13,28 +11,36 @@ type Provider interface {
 	NewInfra(*config.Infra) error
 	HaltInfra(*config.Infra) error
 	RegisterInstances(*config.Infra) error
-	DestroyInstances(*config.ConfigInfra) error
+	DestroyInstances(*config.Infra) error
 }
 
 // CloudInfra contains information about the provisioners that that infra will
 // be instantiated .
 type CloudInfra struct {
 	Provider string
-	Config   *config.ConfigInfra
+	Config   *config.Infra
 }
 
-func newProvider(provider string) (Provider, error) {
+// NewInfra creates a new infrastructure instance that has information about
+// the currently used provider.
+func NewInfra(provider string) *CloudInfra {
+	return &CloudInfra{
+		Provider: provider,
+	}
+}
+
+func newProvider(config *config.Infra, provider string) (Provider, error) {
 	// NOTE: suffices for now, should account for future providers.
-	return libvirt.NewLibvirtProvider()
+	return libvirt.NewLibvirtProvider(config)
 }
 
 // Up will bring up a new infrastructure.
-func (cf *CloudInfra) Up() error {
-	provider, err := newProvider(cf.Provider)
+func (cf *CloudInfra) Up(config *config.Infra) error {
+	provider, err := newProvider(config, cf.Provider)
 	if err != nil {
 		return err
 	}
-	if err := provider.NewInfra(); err != nil {
+	if err := provider.NewInfra(config); err != nil {
 		return err
 	}
 	return nil
@@ -42,14 +48,16 @@ func (cf *CloudInfra) Up() error {
 
 // Halt will halt the infrastructure with the options of pausing it or
 // destroying it permanently.
-func (cf *CloudInfra) Halt(delete, pause bool) error {
+func (cf *CloudInfra) Halt(config *config.Infra, delete, pause bool) error {
 	return nil
 }
 
-func (cf *CloudInfra) NewInstances() error {
+// NewInstances will add new instances to the already running infrastructure.
+func (cf *CloudInfra) NewInstances(config *config.Infra) error {
 	return nil
 }
 
-func (cf *CloudInfra) DeleteInstances(instance string) error {
+// DeleteInstances deletes one or more running instances.
+func (cf *CloudInfra) DeleteInstances(config *config.Infra, instance string) error {
 	return nil
 }

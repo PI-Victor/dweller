@@ -15,8 +15,8 @@ type LibvirtProvider struct {
 	client *libvirt.Connect
 }
 
-// NewInfra creates a new cloudflavor infrastructure on top of qemu formed out
-// of 1xMaster and 2xWorker Nodes with an attached storage.
+// NewInfra creates a new cloudflavor infrastructure on top of qemu containing
+// 1xMaster and 2xWorker Nodes with attached storage for glusterfs.
 func (lb *LibvirtProvider) NewInfra(config *config.Infra) error {
 	return nil
 }
