@@ -1,6 +1,9 @@
 package libvirt
 
 import (
+	"encoding/xml"
+
+	"github.com/Sirupsen/logrus"
 	"github.com/libvirt/libvirt-go"
 
 	"github.com/cloudflavor/dweller/pkg/providers/config"
@@ -18,6 +21,21 @@ type LibvirtProvider struct {
 // NewInfra creates a new cloudflavor infrastructure on top of qemu containing
 // 1xMaster and 2xWorker Nodes with attached storage for glusterfs.
 func (lb *LibvirtProvider) NewInfra(config *config.Infra) error {
+	domainXMLSchema := newDomain()
+	domain, err := xml.Marshal(domainXMLSchema)
+
+	// NOTE: debuggin purpose only
+	id, _ := xml.MarshalIndent(domainXMLSchema, " ", "   ")
+	logrus.Debugf("Domain XML Schema: %s", id)
+
+	if err != nil {
+		return err
+	}
+	_, err = lb.client.DomainDefineXML(string(domain))
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -28,6 +46,7 @@ func (lb *LibvirtProvider) RegisterInstances(config *config.Infra) error {
 
 // DestroyInstances destroys a specific instance from the infrastructure.
 func (lb *LibvirtProvider) DestroyInstances(config *config.Infra) error {
+
 	return nil
 }
 
@@ -44,6 +63,7 @@ func NewLibvirtProvider(config *config.Infra) (*LibvirtProvider, error) {
 	}
 
 	conn, err := libvirt.NewConnect(*config.LibvirtURI)
+
 	if err != nil {
 		return nil, err
 	}

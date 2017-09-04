@@ -36,11 +36,11 @@ func newProvider(config *config.Infra, provider string) (Provider, error) {
 
 // Up will bring up a new infrastructure.
 func (cf *CloudInfra) Up(config *config.Infra) error {
-	provider, err := newProvider(config, cf.Provider)
+	prov, err := newProvider(config, cf.Provider)
 	if err != nil {
 		return err
 	}
-	if err := provider.NewInfra(config); err != nil {
+	if err := prov.NewInfra(config); err != nil {
 		return err
 	}
 	return nil

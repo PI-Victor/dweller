@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"github.com/Sirupsen/logrus"
 	"github.com/spf13/cobra"
 
 	"github.com/cloudflavor/dweller/pkg/providers"
@@ -13,6 +14,8 @@ var (
 	pauseInfra       bool
 	upInstances      int
 	infraProvider    string
+	masterIP         string
+	virtProvisioner  string
 )
 
 // UpCommand provisines a basic cluster infrastructure.
@@ -24,7 +27,13 @@ provider, libvirt. It will provision 3 machines - two workers and a master node.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		newInfra := provider.NewInfra(infraProvider)
-		newInfra.Up(&config.Infra{})
+		err := newInfra.Up(&config.Infra{
+			LibvirtURI: &infraProviderURI,
+			Provider:   &infraProvider,
+		})
+		if err != nil {
+			logrus.Fatalf("Error while bringing up infrastructure: %#v", err)
+		}
 	},
 }
 
@@ -71,10 +80,24 @@ func init() {
 	)
 
 	UpCommand.PersistentFlags().StringVar(
+		&virtProvisioner,
+		"provisioner",
+		"qemu",
+		"Specify the provisioner for libvirt (qemu or xen)",
+	)
+
+	UpCommand.PersistentFlags().StringVar(
 		&infraProviderURI,
 		"uri",
 		"qemu:///system",
 		"The URI that the provider should use to connect to",
+	)
+
+	NewCommand.PersistentFlags().StringVar(
+		&masterIP,
+		"master",
+		"",
+		"Specify the IP address of the master node",
 	)
 
 	HaltCommand.PersistentFlags().BoolVar(
