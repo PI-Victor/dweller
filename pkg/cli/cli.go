@@ -4,8 +4,8 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/spf13/cobra"
 
+	"github.com/cloudflavor/dweller/pkg/config"
 	"github.com/cloudflavor/dweller/pkg/providers"
-	"github.com/cloudflavor/dweller/pkg/providers/config"
 )
 
 var (
@@ -21,7 +21,7 @@ var (
 // UpCommand provisines a basic cluster infrastructure.
 var UpCommand = &cobra.Command{
 	Use:   "up",
-	Short: "Spin up a simple Cloudflavor infrastructure ",
+	Short: "Bring up a simple Cloudflavor infrastructure ",
 	Example: `dw up - Starts a basic Cloudflavor infrastructure with the default
 provider, libvirt. It will provision 3 machines - two workers and a master node.
 `,
@@ -47,10 +47,8 @@ var NewCommand = &cobra.Command{
 
 // DeleteCommand deletes a specified instance from the infrastructure.
 var DeleteCommand = &cobra.Command{
-	Use: "delete",
-	Short: `Delete a specific instance. Use list to get a list of available
-running instances
-`,
+	Use:   "delete",
+	Short: "Delete a specific instance",
 	Run: func(cmd *cobra.Command, args []string) {
 	},
 }
