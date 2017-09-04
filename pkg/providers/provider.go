@@ -5,8 +5,8 @@ import (
 	"github.com/cloudflavor/dweller/pkg/providers/libvirt"
 )
 
-// Provider is an interface that all service providers must implement in order
-// order to provision new Cloudflavor infrastructure.
+// Provider is an interface that all providers must implement in order to
+// provision new Cloudflavor infrastructure.
 type Provider interface {
 	NewInfra(*config.Infra) error
 	HaltInfra(*config.Infra) error
@@ -14,8 +14,8 @@ type Provider interface {
 	DestroyInstances(*config.Infra) error
 }
 
-// CloudInfra contains information about the provisioners that that infra will
-// be instantiated .
+// CloudInfra contains information about the provisioners that infra will be
+// instantiated.
 type CloudInfra struct {
 	Provider string
 	Config   *config.Infra
