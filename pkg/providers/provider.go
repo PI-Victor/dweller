@@ -1,7 +1,7 @@
 package provider
 
 import (
-	"github.com/cloudflavor/dweller/pkg/providers/config"
+	"github.com/cloudflavor/dweller/pkg/config"
 	"github.com/cloudflavor/dweller/pkg/providers/libvirt"
 )
 

@@ -4,7 +4,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/libvirt/libvirt-go"
 
-	"github.com/cloudflavor/dweller/pkg/providers/config"
+	"github.com/cloudflavor/dweller/pkg/config"
 )
 
 var (

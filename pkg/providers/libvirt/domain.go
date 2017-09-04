@@ -45,6 +45,40 @@ func newDomain() *libvirtxml.Domain {
 func newDomainDisk(master bool) []libvirtxml.DomainDisk {
 	// NOTE: Disk creation should be handled by the controller and attached
 	// according to node. Master or Worker.
+	if !master {
+		return []libvirtxml.DomainDisk{
+			{
+				Driver: &libvirtxml.DomainDiskDriver{
+					Name: "qemu",
+					Type: "qcow2",
+				},
+				Type:   "file",
+				Device: "disk",
+				Source: &libvirtxml.DomainDiskSource{
+					// NOTE: remember to change this to a working armetOS qcow2 file.
+					File: tmpOSSOurceFile,
+				},
+				Target: &libvirtxml.DomainDiskTarget{
+					Dev: "vda",
+					Bus: "virtio",
+				},
+			},
+			{
+				Driver: &libvirtxml.DomainDiskDriver{
+					Name: "qemu",
+					Type: "raw",
+				},
+				Type:   "volume",
+				Device: "disk",
+				Source: &libvirtxml.DomainDiskSource{
+					// TODO: only for testing - change this to a created pool
+					Pool:   "test-pool",
+					Volume: "test-volume",
+				},
+			},
+		}
+	}
+
 	return []libvirtxml.DomainDisk{
 		{
 			Driver: &libvirtxml.DomainDiskDriver{
