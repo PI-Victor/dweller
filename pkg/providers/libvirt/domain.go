@@ -5,11 +5,13 @@ import (
 )
 
 var (
-	defaultDomainName               = "ArmetOS-Infra"
-	defaultDomainType               = "qemu"
-	defaultDomainOSType             = "hvm"
-	defaultDomainOSMachine          = "pc"
-	defaultOSSourceFile             = "/var/lib/libvirt/images/armetOS-0-1.x86_64.qcow2"
+	defaultDomainName      = "ArmetOS-Infra"
+	defaultDomainType      = "qemu"
+	defaultDomainOSType    = "hvm"
+	defaultDomainOSMachine = "pc"
+	defaultOSSourceFile    = "/var/lib/libvirt/images/armetOS-0-1.x86_64.qcow2"
+	// NOTE: till ArmetOS qcow2 is ready, use a default image from fedora cloud
+	tmpOSSOurceFile                 = "/var/lib/libvirt/images/fedora25.qcow2"
 	defaultCurrentMemory       uint = 1024
 	defaultMaxMemory           uint = 4096
 	defaultAttachedStorageSize      = "40GB"
@@ -28,16 +30,21 @@ type domainMemory struct {
 func newDomain() *libvirtxml.Domain {
 	memSpec := newDomainMemory()
 	return &libvirtxml.Domain{
-		Type:   defaultDomainType,
-		Name:   defaultDomainName,
-		CPU:    newDomainCPU(),
-		VCPU:   newDomainVCPU(),
-		OS:     newDomainOS(),
-		Memory: memSpec.domain,
+		Type:       defaultDomainType,
+		Name:       defaultDomainName,
+		VCPU:       newDomainVCPU(),
+		OS:         newDomainOS(),
+		Memory:     memSpec.domain,
+		Devices:    newDomainDevices(),
+		OnReboot:   "restart",
+		OnPoweroff: "destroy",
+		OnCrash:    "destroy",
 	}
 }
 
-func newDomainDisk() []libvirtxml.DomainDisk {
+func newDomainDisk(master bool) []libvirtxml.DomainDisk {
+	// NOTE: Disk creation should be handled by the controller and attached
+	// according to node. Master or Worker.
 	return []libvirtxml.DomainDisk{
 		{
 			Driver: &libvirtxml.DomainDiskDriver{
@@ -46,13 +53,27 @@ func newDomainDisk() []libvirtxml.DomainDisk {
 			},
 			Type:   "file",
 			Device: "disk",
+			Source: &libvirtxml.DomainDiskSource{
+				// NOTE: remember to change this to a working armetOS qcow2 file.
+				File: tmpOSSOurceFile,
+			},
+			Target: &libvirtxml.DomainDiskTarget{
+				Dev: "vda",
+				Bus: "virtio",
+			},
 		},
 	}
 }
 
 func newDomainDevices() *libvirtxml.DomainDeviceList {
 	return &libvirtxml.DomainDeviceList{
-		Disks: newDomainDisk(),
+		Disks: newDomainDisk(false),
+		Graphics: []libvirtxml.DomainGraphic{
+			{
+				Type:     "spice",
+				AutoPort: "yes",
+			},
+		},
 	}
 }
 
@@ -77,17 +98,11 @@ func newDomainVCPU() *libvirtxml.DomainVCPU {
 	}
 }
 
-func newDomainCPU() *libvirtxml.DomainCPU {
-	return &libvirtxml.DomainCPU{}
-}
-
 func newDomainMemory() *domainMemory {
 	return &domainMemory{
 		domain: &libvirtxml.DomainMemory{
 			Value: defaultCurrentMemory,
-		},
-		current: &libvirtxml.DomainMemory{
-			Value: defaultCurrentMemory,
+			Unit:  "MiB",
 		},
 	}
 }

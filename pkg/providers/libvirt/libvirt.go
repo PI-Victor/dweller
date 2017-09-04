@@ -1,8 +1,6 @@
 package libvirt
 
 import (
-	"encoding/xml"
-
 	"github.com/Sirupsen/logrus"
 	"github.com/libvirt/libvirt-go"
 
@@ -21,17 +19,16 @@ type LibvirtProvider struct {
 // NewInfra creates a new cloudflavor infrastructure on top of qemu containing
 // 1xMaster and 2xWorker Nodes with attached storage for glusterfs.
 func (lb *LibvirtProvider) NewInfra(config *config.Infra) error {
-	domainXMLSchema := newDomain()
-	domain, err := xml.Marshal(domainXMLSchema)
-
-	// NOTE: debuggin purpose only
-	id, _ := xml.MarshalIndent(domainXMLSchema, " ", "   ")
-	logrus.Debugf("Domain XML Schema: %s", id)
+	domain, err := newDomain().Marshal()
+	if err != nil {
+		return nil
+	}
+	logrus.Debugf("Domain XML Schema: %s", domain)
 
 	if err != nil {
 		return err
 	}
-	_, err = lb.client.DomainDefineXML(string(domain))
+	_, err = lb.client.DomainDefineXML(domain)
 	if err != nil {
 		return err
 	}
