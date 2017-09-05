@@ -43,7 +43,6 @@ func (lb *LibvirtProvider) RegisterInstances(config *config.Infra) error {
 
 // DestroyInstances destroys a specific instance from the infrastructure.
 func (lb *LibvirtProvider) DestroyInstances(config *config.Infra) error {
-
 	return nil
 }
 
@@ -60,7 +59,6 @@ func NewLibvirtProvider(config *config.Infra) (*LibvirtProvider, error) {
 	}
 
 	conn, err := libvirt.NewConnect(*config.LibvirtURI)
-
 	if err != nil {
 		return nil, err
 	}
