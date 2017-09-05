@@ -11,24 +11,26 @@ var (
 	defaultSystemURI = "qemu:///system"
 )
 
+// LibvirtClient interfaces the libvirt client.
+type LibvirtClient interface {
+	DomainDefineXML(xmlConfig string) (*libvirt.Domain, error)
+}
+
 // LibvirtProvider contains the libvirt connection instance information.
 type LibvirtProvider struct {
-	client *libvirt.Connect
+	LibvirtClient
 }
 
 // NewInfra creates a new cloudflavor infrastructure on top of qemu containing
-// 1xMaster and 2xWorker Nodes with attached storage for glusterfs.
+// 1xMaster and 2xWorker Nodes with attached.
 func (lb *LibvirtProvider) NewInfra(config *config.Infra) error {
-	domain, err := newDomain().Marshal()
+	domain, err := newDomainResource().Marshal()
 	if err != nil {
 		return nil
 	}
 	logrus.Debugf("Domain XML Schema: %s", domain)
 
-	if err != nil {
-		return err
-	}
-	_, err = lb.client.DomainDefineXML(domain)
+	_, err = lb.DomainDefineXML(domain)
 	if err != nil {
 		return err
 	}
@@ -64,6 +66,6 @@ func NewLibvirtProvider(config *config.Infra) (*LibvirtProvider, error) {
 	}
 
 	return &LibvirtProvider{
-		client: conn,
+		conn,
 	}, nil
 }
