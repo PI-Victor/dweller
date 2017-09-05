@@ -8,3 +8,7 @@ install:
 	@echo "Creating symlink in ${GOPATH}/bin"
 	@rm ${GOPATH}/bin/dw || true
 	@ln -s `pwd`/_output/bin/dw ${GOPATH}/bin
+
+test:
+	@go test -v ./pkg/providers/
+	@go test -v ./pkg/providers/libvirt
