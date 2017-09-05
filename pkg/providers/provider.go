@@ -1,8 +1,16 @@
 package provider
 
 import (
+	"errors"
+
 	"github.com/cloudflavor/dweller/pkg/config"
 	"github.com/cloudflavor/dweller/pkg/providers/libvirt"
+)
+
+var (
+	defaultProvider = "libvirt"
+	// ErrUnkownProvider is used for unsuported providers.
+	ErrUnkownProvider = errors.New("Unkown provider")
 )
 
 // Provider is an interface that all providers must implement in order to
@@ -15,32 +23,33 @@ type Provider interface {
 }
 
 // CloudInfra contains information about the provisioners that infra will be
-// instantiated.
+// instantiated and their related configuration.
 type CloudInfra struct {
-	Provider string
 	Config   *config.Infra
+	Provider Provider
 }
 
 // NewInfra creates a new infrastructure instance that has information about
 // the currently used provider.
-func NewInfra(provider string) *CloudInfra {
+func NewInfra(provider Provider, config *config.Infra) *CloudInfra {
 	return &CloudInfra{
 		Provider: provider,
+		Config:   config,
 	}
 }
 
-func newProvider(config *config.Infra, provider string) (Provider, error) {
+// NewProvider returns a new instance of a specified provider
+func NewProvider(config *config.Infra) (Provider, error) {
 	// NOTE: suffices for now, should account for future providers.
-	return libvirt.NewLibvirtProvider(config)
+	if config.ProviderName == &defaultProvider {
+		return libvirt.NewLibvirtProvider(config)
+	}
+	return nil, ErrUnkownProvider
 }
 
 // Up will bring up a new infrastructure.
-func (cf *CloudInfra) Up(config *config.Infra) error {
-	prov, err := newProvider(config, cf.Provider)
-	if err != nil {
-		return err
-	}
-	if err := prov.NewInfra(config); err != nil {
+func (cf *CloudInfra) Up() error {
+	if err := cf.Provider.NewInfra(cf.Config); err != nil {
 		return err
 	}
 	return nil
@@ -48,16 +57,16 @@ func (cf *CloudInfra) Up(config *config.Infra) error {
 
 // Halt will halt the infrastructure with the options of pausing it or
 // destroying it permanently.
-func (cf *CloudInfra) Halt(config *config.Infra, delete, pause bool) error {
+func (cf *CloudInfra) Halt(delete, pause bool) error {
 	return nil
 }
 
 // NewInstances will add new instances to the already running infrastructure.
-func (cf *CloudInfra) NewInstances(config *config.Infra) error {
+func (cf *CloudInfra) NewInstances() error {
 	return nil
 }
 
 // DeleteInstances deletes one or more running instances.
-func (cf *CloudInfra) DeleteInstances(config *config.Infra, instance string) error {
+func (cf *CloudInfra) DeleteInstances(instance string) error {
 	return nil
 }
