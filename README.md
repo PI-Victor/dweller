@@ -1,9 +1,12 @@
-dweller
+dweller  
 ---
+[![Build Status](https://travis-ci.org/cloudflavor/dweller.svg?branch=master)](https://travis-ci.org/cloudflavor/dweller)
+[![codecov](https://codecov.io/gh/cloudflavor/dweller/branch/master/graph/badge.svg)](https://codecov.io/gh/cloudflavor/dweller)
+
 Setups up the `Cloudflavor` infrastructure on different providers. Currently
 `libvirt` with `qemu` is supported and `xen` to be implemented in the future.
 
-The default provisioning is 1xMaster and 2xWorkers but it can be overriden
+The default provisioning is 1xMaster and 2xWorkers but it can be overridden.
 
 ```
 dw - A CLI for provisioning a new Cloudflavor infrastructure

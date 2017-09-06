@@ -10,5 +10,5 @@ install:
 	@ln -s `pwd`/_output/bin/dw ${GOPATH}/bin
 
 test:
-	@go test -v ./pkg/providers/
-	@go test -v ./pkg/providers/libvirt
+	@go test -race -coverprofile=coverage.txt -covermode=atomic -v ./pkg/providers/
+	@go test -race -coverprofile=coverage.txt -covermode=atomic -v ./pkg/providers/libvirt
