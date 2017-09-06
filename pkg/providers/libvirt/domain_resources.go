@@ -27,22 +27,32 @@ type domainMemory struct {
 	current *libvirtxml.DomainMemory
 }
 
-func newDomain() *libvirtxml.Domain {
-	memSpec := newDomainMemory()
+func newDomainResource() *libvirtxml.Domain {
+	memSpec := newDomainMemoryResource()
 	return &libvirtxml.Domain{
 		Type:       defaultDomainType,
 		Name:       defaultDomainName,
-		VCPU:       newDomainVCPU(),
-		OS:         newDomainOS(),
+		VCPU:       newDomainVCPUResource(),
+		OS:         newDomainOSResource(),
 		Memory:     memSpec.domain,
-		Devices:    newDomainDevices(),
+		Devices:    newDomainDevicesResource(false),
 		OnReboot:   "restart",
 		OnPoweroff: "destroy",
 		OnCrash:    "destroy",
 	}
 }
 
-func newDomainDisk(master bool) []libvirtxml.DomainDisk {
+func newBIOSBootloaderResource() *libvirtxml.DomainLoader {
+	return &libvirtxml.DomainLoader{
+		Readonly: "yes",
+		Type:     "pflash",
+		Secure:   "no",
+		// NOTE: remember to check this out!???
+		Path: "/usr/lib/libvirt",
+	}
+}
+
+func newDomainDiskResource(master bool) []libvirtxml.DomainDisk {
 	// NOTE: Disk creation should be handled by the controller and attached
 	// according to node. Master or Worker.
 	if !master {
@@ -99,9 +109,9 @@ func newDomainDisk(master bool) []libvirtxml.DomainDisk {
 	}
 }
 
-func newDomainDevices() *libvirtxml.DomainDeviceList {
+func newDomainDevicesResource(isMaster bool) *libvirtxml.DomainDeviceList {
 	return &libvirtxml.DomainDeviceList{
-		Disks: newDomainDisk(false),
+		Disks: newDomainDiskResource(false),
 		Graphics: []libvirtxml.DomainGraphic{
 			{
 				Type:     "spice",
@@ -111,8 +121,9 @@ func newDomainDevices() *libvirtxml.DomainDeviceList {
 	}
 }
 
-func newDomainOS() *libvirtxml.DomainOS {
+func newDomainOSResource() *libvirtxml.DomainOS {
 	return &libvirtxml.DomainOS{
+		Loader: newBIOSBootloaderResource(),
 		Type: &libvirtxml.DomainOSType{
 			Type:    defaultDomainOSType,
 			Arch:    defaultDomainArch,
@@ -125,14 +136,14 @@ func newDomainOS() *libvirtxml.DomainOS {
 	}
 }
 
-func newDomainVCPU() *libvirtxml.DomainVCPU {
+func newDomainVCPUResource() *libvirtxml.DomainVCPU {
 	return &libvirtxml.DomainVCPU{
 		Value:     defaultDomainVCPU,
 		Placement: defaultPlacement,
 	}
 }
 
-func newDomainMemory() *domainMemory {
+func newDomainMemoryResource() *domainMemory {
 	return &domainMemory{
 		domain: &libvirtxml.DomainMemory{
 			Value: defaultCurrentMemory,

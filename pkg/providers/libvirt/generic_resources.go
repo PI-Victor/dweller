@@ -5,9 +5,11 @@ import (
 )
 
 func newStoragePool() *libvirtxml.StoragePool {
-	return nil
+	return &libvirtxml.StoragePool{
+		Source: &libvirtxml.StoragePoolSource{},
+	}
 }
 
 func newNetwork() *libvirtxml.NetworkDomain {
-	return nil
+	return &libvirtxml.NetworkDomain{}
 }
