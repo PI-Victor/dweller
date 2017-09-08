@@ -4,6 +4,6 @@ package config
 type Infra struct {
 	// Libvirt provider configuration
 	LibvirtURI   *string
-	ProviderName *string
-	Workers      *int
+	ProviderName string
+	Workers      int
 }

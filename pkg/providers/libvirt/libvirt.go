@@ -20,7 +20,6 @@ type LibvirtClient interface {
 type LibvirtProvider struct {
 	Client     LibvirtClient
 	Controller controllers.ProviderController
-	Resources  []resources
 }
 
 // NewInfra creates a new cloudflavor infrastructure on top of qemu containing
@@ -58,9 +57,9 @@ func NewLibvirtProvider(config *config.Infra) (*LibvirtProvider, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	// NOTE: remember to refactor resource definition.
 	return &LibvirtProvider{
 		Client:     conn,
-		Controller: newController(nil),
+		Controller: newController(conn, newDomainResource()),
 	}, nil
 }

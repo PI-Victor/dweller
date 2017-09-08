@@ -41,7 +41,7 @@ func NewInfra(provider Provider, config *config.Infra) *CloudInfra {
 // NewProvider returns a new instance of a specified provider
 func NewProvider(config *config.Infra) (Provider, error) {
 	// NOTE: suffices for now, should account for future providers.
-	if *config.ProviderName == defaultProvider {
+	if config.ProviderName == defaultProvider {
 		return libvirt.NewLibvirtProvider(config)
 	}
 	return nil, ErrUnkownProvider

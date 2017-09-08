@@ -37,13 +37,13 @@ func newMockConfig(prov string) *config.Infra {
 	lvURI := "qemu:///sytem"
 	return &config.Infra{
 		LibvirtURI:   &lvURI,
-		ProviderName: &prov,
+		ProviderName: prov,
 	}
 }
 
 func newMockProvider(conf *config.Infra, err error) Provider {
 	return &mockProvider{
-		ProviderName: *conf.ProviderName,
+		ProviderName: conf.ProviderName,
 		err:          err,
 	}
 }

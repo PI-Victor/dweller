@@ -12,8 +12,7 @@ type LibvirtController struct {
 	client    LibvirtClient
 }
 
-// Resources is an interface that all resources need to implement in order for
-// the controller to create them
+// Resources is an interface for libvirt domain resources
 type resources interface {
 	Marshal() (string, error)
 }
@@ -27,6 +26,7 @@ func newController(client LibvirtClient, res ...resources) *LibvirtController {
 
 // CreateResources tries to create a new instance of a resource.
 func (lc *LibvirtController) CreateResources() error {
+	logrus.Debugf("Got here: %#v", lc.Resources)
 	errChan := make(chan error, len(lc.Resources))
 	var wg sync.WaitGroup
 

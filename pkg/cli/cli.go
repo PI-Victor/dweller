@@ -28,16 +28,15 @@ provider, libvirt. It will provision 3 machines - two workers and a master node.
 	Run: func(cmd *cobra.Command, args []string) {
 		conf := &config.Infra{
 			LibvirtURI:   &infraProviderURI,
-			ProviderName: &infraProvider,
-			Workers:      &upWorkers,
+			ProviderName: infraProvider,
+			Workers:      upWorkers,
 		}
 		prov, err := provider.NewProvider(conf)
 		if err != nil {
 			logrus.Fatalf("Error occured while creating a new provider: %#v", err)
 		}
 		infra := provider.NewInfra(prov, conf)
-		err = infra.Up()
-		if err != nil {
+		if err = infra.Up(); err != nil {
 			logrus.Fatalf("Error while bringing up infrastructure: %#v", err)
 		}
 	},
