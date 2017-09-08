@@ -8,6 +8,16 @@ dweller
 Sets up the `Cloudflavor` infrastructure on different providers. Currently
 `libvirt` with `qemu` is supported and `xen` to be implemented in the future.
 
+dweller manages opinionated virtualized infrastructure and is only designed to be fast in bringing it up.
+It's not as flexible as `terraform`.
+
+Why dweller?
+
+* is fast to work with
+* ships one binary
+* no DSL - configuration is one *simple* `yaml` file that contains the `master/worker` spec and the `qemu` connections pool. (see the [example config file](example-infra.yaml))
+* manages multiple `qemu` nodes to scale the infrastructure horizontally
+
 The default provisioning is 1xMaster and 2xWorkers but the default number of
 workers can be overridden. The infrastructure scales horizontally across
 multiple machines that have libvirt installed. To setup the bare metal machines
