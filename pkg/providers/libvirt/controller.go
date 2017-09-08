@@ -27,8 +27,7 @@ func newController(client LibvirtClient, res ...resources) *LibvirtController {
 
 // CreateResources tries to create a new instance of a resource.
 func (lc *LibvirtController) CreateResources() error {
-	errChan := make(chan error, 1)
-	finished := make(chan struct{}, 0)
+	errChan := make(chan error, len(lc.Resources))
 	var wg sync.WaitGroup
 
 	for _, resource := range lc.Resources {
@@ -46,12 +45,16 @@ func (lc *LibvirtController) CreateResources() error {
 	}
 	go func() {
 		wg.Wait()
-		close(finished)
+		close(errChan)
 	}()
 
-	err := <-errChan
-	logrus.Infof("Finished resource creation with err: %#v", err)
-	return err
+	for err := range errChan {
+		if err != nil {
+			logrus.Warning("Failed to instantiate resource: %#v", err)
+			return err
+		}
+	}
+	return nil
 }
 
 // DeleteResources selectively deletes resources either specific to domain
