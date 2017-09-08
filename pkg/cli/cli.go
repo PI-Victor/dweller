@@ -12,7 +12,7 @@ var (
 	infraProviderURI string
 	destroyInfra     bool
 	pauseInfra       bool
-	upInstances      int
+	upWorkers        int
 	infraProvider    string
 	masterIP         string
 	virtProvisioner  string
@@ -29,6 +29,7 @@ provider, libvirt. It will provision 3 machines - two workers and a master node.
 		conf := &config.Infra{
 			LibvirtURI:   &infraProviderURI,
 			ProviderName: &infraProvider,
+			Workers:      &upWorkers,
 		}
 		prov, err := provider.NewProvider(conf)
 		if err != nil {
@@ -69,10 +70,10 @@ var HaltCommand = &cobra.Command{
 
 func init() {
 	UpCommand.PersistentFlags().IntVar(
-		&upInstances,
-		"instances",
+		&upWorkers,
+		"workers",
 		2,
-		"Specify the default number of worker instances to provision",
+		"Specify number of worker instances to provision",
 	)
 
 	UpCommand.PersistentFlags().StringVar(
