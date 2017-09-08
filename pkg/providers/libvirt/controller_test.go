@@ -2,31 +2,60 @@ package libvirt
 
 import (
 	"testing"
-
-	"github.com/libvirt/libvirt-go"
-
-	"github.com/cloudflavor/dweller/pkg/providers/controllers"
 )
 
-func newMockLibvirtController(res ...controllers.Resources) *LibvirtController {
+type fakeController struct {
+	err error
+}
+
+func (f *fakeController) CreateResources() error {
+	return f.err
+}
+
+func (f *fakeController) DeleteResources() error {
+	return f.err
+}
+
+func newFakeController(err error) *fakeController {
+	return &fakeController{
+		err: err,
+	}
+}
+
+type fakeResource struct {
+	testString string
+	err        error
+}
+
+func (f *fakeResource) Marshal() (string, error) {
+	return f.testString, f.err
+}
+
+func newFakeResource() fakeResource {
+	return fakeResource{}
+}
+
+func newMockLibvirtController(err error, res ...resources) *LibvirtController {
 	return &LibvirtController{
-		Resources: append([]controllers.Resources{}, res...),
+		client:    newMockLibvirtClient(nil, err),
+		Resources: append([]resources{}, res...),
 	}
 }
 
 func TestNewControllerInstance(t *testing.T) {
-	if c := newController(); c == nil {
+	if c := newController(newMockLibvirtClient(nil, nil)); c == nil {
 		t.Fatalf("Expected a new controller, got nil")
 	}
 }
 
-func TestNewInstance(t *testing.T) {
-	nc := newMockLibvirtController(
-		[]controllers.Resources{
-			libvirt.Domain{},
-		},
-	)
-	if n := nc.NewInstance(); n != nil {
-		t.Errorf("Expected NewInstance to return nil, got: %#v", n)
+func TestCreateResources(t *testing.T) {
+	//controller := newMockLibvirtController(nil)
+	//if
+}
+
+func TestDeleteResources(t *testing.T) {
+	nc := newMockLibvirtController(nil)
+	if err := nc.DeleteResources(); err != nil {
+		t.Errorf("Expected a nil error, got: %#v", err)
 	}
 }

@@ -111,7 +111,7 @@ func newDomainDiskResource(master bool) []libvirtxml.DomainDisk {
 
 func newDomainDevicesResource(isMaster bool) *libvirtxml.DomainDeviceList {
 	return &libvirtxml.DomainDeviceList{
-		Disks: newDomainDiskResource(false),
+		Disks: newDomainDiskResource(isMaster),
 		Graphics: []libvirtxml.DomainGraphic{
 			{
 				Type:     "spice",

@@ -1,10 +1,10 @@
 package libvirt
 
 import (
-	"github.com/Sirupsen/logrus"
 	"github.com/libvirt/libvirt-go"
 
 	"github.com/cloudflavor/dweller/pkg/config"
+	"github.com/cloudflavor/dweller/pkg/providers/controllers"
 )
 
 var (
@@ -18,23 +18,17 @@ type LibvirtClient interface {
 
 // LibvirtProvider contains the libvirt connection instance information.
 type LibvirtProvider struct {
-	LibvirtClient
+	Client     LibvirtClient
+	Controller controllers.ProviderController
+	Resources  []resources
 }
 
 // NewInfra creates a new cloudflavor infrastructure on top of qemu containing
 // 1xMaster and 2xWorker Nodes with attached.
 func (lb *LibvirtProvider) NewInfra(config *config.Infra) error {
-	domain, err := newDomainResource().Marshal()
-	if err != nil {
-		return nil
-	}
-	logrus.Debugf("Domain XML Schema: %s", domain)
-
-	_, err = lb.DomainDefineXML(domain)
-	if err != nil {
+	if err := lb.Controller.CreateResources(); err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -66,6 +60,7 @@ func NewLibvirtProvider(config *config.Infra) (*LibvirtProvider, error) {
 	}
 
 	return &LibvirtProvider{
-		conn,
+		Client:     conn,
+		Controller: newController(nil),
 	}, nil
 }

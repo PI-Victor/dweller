@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/cloudflavor/dweller/pkg/config"
-	_ "github.com/cloudflavor/dweller/pkg/providers/libvirt"
 )
 
 var (

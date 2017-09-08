@@ -31,12 +31,13 @@ func newMockLibvirtClient(domain *libvirt.Domain, err error) *mockLibvirtClient 
 
 func newMockLibvirtProvider(domain *libvirt.Domain, err error) *LibvirtProvider {
 	return &LibvirtProvider{
-		newMockLibvirtClient(domain, err),
+		Client: newMockLibvirtClient(domain, err),
 	}
 }
 
 func TestLibvirtNewInfra(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
+	np.Controller = newFakeController(nil)
 	err := np.NewInfra(&config.Infra{})
 	if err != nil {
 		t.Errorf("Did not expect an error, got: %#v", err)
@@ -45,6 +46,7 @@ func TestLibvirtNewInfra(t *testing.T) {
 
 func TestLibvirtNewInfraError(t *testing.T) {
 	np := newMockLibvirtProvider(nil, ErrTestLibvirt)
+	np.Controller = newFakeController(ErrTestLibvirt)
 	err := np.NewInfra(&config.Infra{})
 	if err == nil {
 		t.Errorf("Expected error to be: %#v got nil", ErrTestLibvirt)
