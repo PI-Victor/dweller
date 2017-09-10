@@ -28,9 +28,7 @@ func newStoragePool() *libvirtxml.StoragePool {
 			Unit:  "MB",
 			Value: 10000,
 		},
-		Capacity: &libvirtxml.StoragePoolTarget{
-
-		}
+		Capacity: &libvirtxml.StoragePoolSize{},
 	}
 }
 
