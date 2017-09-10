@@ -22,10 +22,11 @@ import (
 	"github.com/Sirupsen/logrus"
 )
 
-// LibvirtController handles creation and deletion of libvirt resources.
-type LibvirtController struct {
-	Resources []resources
-	client    LibvirtClient
+// Controller handles creation and deletion of libvirt resources.
+type Controller struct {
+	DomainResources  []resources
+	GenericResources []resources
+	client           Client
 }
 
 // Resources is an interface for libvirt domain resources
@@ -33,20 +34,20 @@ type resources interface {
 	Marshal() (string, error)
 }
 
-func newController(client LibvirtClient, res ...resources) *LibvirtController {
-	return &LibvirtController{
-		Resources: res,
-		client:    client,
+func newController(client Client, domainRes []resources, genRes ...resources) *Controller {
+	return &Controller{
+		DomainResources: domainRes,
+		client:          client,
 	}
 }
 
 // CreateResources tries to create a new instance of a resource.
-func (lc *LibvirtController) CreateResources() error {
-	logrus.Debugf("Got here: %#v", lc.Resources)
-	errChan := make(chan error, len(lc.Resources))
+func (c *Controller) CreateResources() error {
+	logrus.Debugf("Got here: %#v", c.DomainResources)
+	errChan := make(chan error, len(c.DomainResources))
 	var wg sync.WaitGroup
 
-	for _, resource := range lc.Resources {
+	for _, resource := range c.DomainResources {
 		logrus.Info("Starting resource creation")
 		wg.Add(1)
 		go func(wg *sync.WaitGroup, res resources) {
@@ -55,7 +56,7 @@ func (lc *LibvirtController) CreateResources() error {
 			if err != nil {
 				errChan <- err
 			}
-			_, err = lc.client.DomainDefineXML(r)
+			_, err = c.client.DomainDefineXML(r)
 			errChan <- err
 		}(&wg, resource)
 	}
@@ -65,16 +66,26 @@ func (lc *LibvirtController) CreateResources() error {
 	}()
 
 	for err := range errChan {
+		// NOTE: even if we return an error here, the available resources were
+		// already created. This is kinda pointless, we should just warn the user that
+		// the creation of the resource failed.
+		// When the connection pool is implemented it can have a retry with a different
+		// connection.
 		if err != nil {
 			logrus.Warningf("Failed to instantiate resource: %#v", err)
-			return err
 		}
 	}
 	return nil
 }
 
+// CreateGenericResources creates generic libvirt resources such as network and
+// storage pools.
+func (c *Controller) CreateGenericResources() error {
+	return nil
+}
+
 // DeleteResources selectively deletes resources either specific to domain
 // definition or generic resources such as network and storage-pool
-func (lc *LibvirtController) DeleteResources() error {
+func (c *Controller) DeleteResources() error {
 	return nil
 }

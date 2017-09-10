@@ -27,44 +27,49 @@ var (
 	defaultSystemURI = "qemu:///system"
 )
 
-// LibvirtClient interfaces the libvirt client.
-type LibvirtClient interface {
+// Client interfaces the libvirt client.
+type Client interface {
 	DomainDefineXML(xmlConfig string) (*libvirt.Domain, error)
 }
 
-// LibvirtProvider contains the libvirt connection instance information.
-type LibvirtProvider struct {
-	Client     LibvirtClient
+// Provider contains the libvirt connection instance information.
+type Provider struct {
+	Client     Client
 	Controller controllers.ProviderController
 }
 
 // NewInfra creates a new cloudflavor infrastructure on top of qemu containing
 // 1xMaster and 2xWorker Nodes with attached.
-func (lb *LibvirtProvider) NewInfra(config *config.Infra) error {
-	if err := lb.Controller.CreateResources(); err != nil {
+func (p *Provider) NewInfra(config *config.Infra) error {
+	if err := p.Controller.CreateResources(); err != nil {
 		return err
 	}
 	return nil
 }
 
 // RegisterInstances adds a new instance to the infrastructure.
-func (lb *LibvirtProvider) RegisterInstances(config *config.Infra) error {
+func (p *Provider) RegisterInstances(config *config.Infra) error {
 	return nil
 }
 
 // DestroyInstances destroys a specific instance from the infrastructure.
-func (lb *LibvirtProvider) DestroyInstances(config *config.Infra) error {
+func (p *Provider) DestroyInstances(config *config.Infra) error {
 	return nil
 }
 
 // HaltInfra halts the current running infrastructure. It can also pause the
 // current running infra and even destroy it if --destroy flag was passed.
-func (lb *LibvirtProvider) HaltInfra(config *config.Infra) error {
+func (p *Provider) HaltInfra(config *config.Infra) error {
+	return nil
+}
+
+// ListInstances lists all the available instances for the provider.
+func (p *Provider) ListInstances(config *config.Infra) error {
 	return nil
 }
 
 // NewLibvirtProvider creates a new libvirt provider with an active connection.
-func NewLibvirtProvider(config *config.Infra) (*LibvirtProvider, error) {
+func NewLibvirtProvider(config *config.Infra) (*Provider, error) {
 	if config.LibvirtURI == nil {
 		config.LibvirtURI = &defaultSystemURI
 	}
@@ -73,9 +78,17 @@ func NewLibvirtProvider(config *config.Infra) (*LibvirtProvider, error) {
 	if err != nil {
 		return nil, err
 	}
+	// We provision the infrastructure with the number of workers that the user
+	// specified. If there was no number of workers specified, we use the default
+	// (2).
+	var res []resources
+	for i := 0; i < config.Workers; i++ {
+		res = append(res, newDomainResource())
+	}
+
 	// NOTE: remember to refactor resource definition.
-	return &LibvirtProvider{
+	return &Provider{
 		Client:     conn,
-		Controller: newController(conn, newDomainResource()),
+		Controller: newController(conn, res),
 	}, nil
 }

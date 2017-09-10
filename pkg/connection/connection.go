@@ -14,31 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package libvirt
+package connection
 
-import (
-	"github.com/libvirt/libvirt-go-xml"
-)
+// ProviderConnection is the interface that all connections must implement.
+type ProviderConnection interface{}
 
-func newStoragePool() *libvirtxml.StoragePool {
-	return &libvirtxml.StoragePool{
-		Type: "dir",
-		Name: "cloudflavor-infra-pool",
-		Allocation: &libvirtxml.StoragePoolSize{
-			Unit:  "MB",
-			Value: 10000,
-		},
-		Capacity: &libvirtxml.StoragePoolSize{
-			Unit:  "MB",
-			Value: 10000,
-		},
-		Target: &libvirtxml.StoragePoolTarget{
-			// NOTE: this should be dinamic.
-			Path: "/var/lib/libvirt/images",
-		},
-	}
-}
-
-func newNetwork() *libvirtxml.NetworkDomain {
-	return &libvirtxml.NetworkDomain{}
+// Pool holds all available connections
+type Pool struct {
+	Connections []ProviderConnection
 }

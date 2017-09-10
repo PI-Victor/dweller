@@ -36,6 +36,7 @@ type Provider interface {
 	HaltInfra(*config.Infra) error
 	RegisterInstances(*config.Infra) error
 	DestroyInstances(*config.Infra) error
+	ListInstances(*config.Infra) error
 }
 
 // CloudInfra contains information about the provisioners that infra will be
