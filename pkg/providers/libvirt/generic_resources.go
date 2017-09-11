@@ -34,11 +34,11 @@ func newStoragePool() *libvirtxml.StoragePool {
 		},
 		Target: &libvirtxml.StoragePoolTarget{
 			// NOTE: this should be dinamic.
-			Path: "/var/lib/libvirt/images",
+			Path: "/var/lib/libvirt/images/cloudflavor-pool",
 		},
 	}
 }
 
-func newNetwork() *libvirtxml.NetworkDomain {
-	return &libvirtxml.NetworkDomain{}
+func newNetwork() *libvirtxml.Network {
+	return &libvirtxml.Network{}
 }

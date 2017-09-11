@@ -97,8 +97,9 @@ func newDomainDiskResource(master bool) []libvirtxml.DomainDisk {
 				Type:   "volume",
 				Device: "disk",
 				Source: &libvirtxml.DomainDiskSource{
+					Name: "test-disk",
 					// TODO: only for testing - change this to a created pool
-					Pool:   "test-pool",
+					Pool:   "cloudflavor-infra-pool",
 					Volume: "test-volume",
 				},
 			},

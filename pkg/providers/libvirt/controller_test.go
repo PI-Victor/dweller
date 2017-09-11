@@ -51,11 +51,10 @@ func newFakeResource() fakeResource {
 	return fakeResource{}
 }
 
-func newMockLibvirtController(err error, domainRes []resources, genRes []resources) *Controller {
+func newMockLibvirtController(err error, res ...resource) *Controller {
 	return &Controller{
-		client:           newMockLibvirtClient(nil, err),
-		DomainResources:  append([]resources{}, domainRes...),
-		GenericResources: append([]resources{}, genRes...),
+		client:    newMockLibvirtClient(nil, err),
+		Resources: append([]resource{}, res...),
 	}
 }
 

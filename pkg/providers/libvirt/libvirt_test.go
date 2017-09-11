@@ -30,12 +30,22 @@ var (
 )
 
 type mockLibvirtClient struct {
-	domain *libvirt.Domain
-	err    error
+	domain  *libvirt.Domain
+	pool    *libvirt.StoragePool
+	network *libvirt.Network
+	err     error
 }
 
 func (m *mockLibvirtClient) DomainDefineXML(xmlConfig string) (*libvirt.Domain, error) {
 	return m.domain, m.err
+}
+
+func (m *mockLibvirtClient) StoragePoolDefineXML(xmlConfig string, flags uint32) (*libvirt.StoragePool, error) {
+	return m.pool, m.err
+}
+
+func (m *mockLibvirtClient) NetworkDefineXML(xmlConfig string) (*libvirt.Network, error) {
+	return m.network, m.err
 }
 
 func newMockLibvirtClient(domain *libvirt.Domain, err error) *mockLibvirtClient {

@@ -49,7 +49,7 @@ provider, libvirt. It will provision 3 machines - two workers and a master node.
 		}
 		prov, err := provider.NewProvider(conf)
 		if err != nil {
-			logrus.Fatalf("Error occured while creating a new provider: %#v", err)
+			logrus.Fatalf("Error occurred while creating a new provider: %#v", err)
 		}
 		infra := provider.NewInfra(prov, conf)
 		if err = infra.Up(); err != nil {

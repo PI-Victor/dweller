@@ -30,6 +30,8 @@ var (
 // Client interfaces the libvirt client.
 type Client interface {
 	DomainDefineXML(xmlConfig string) (*libvirt.Domain, error)
+	StoragePoolDefineXML(xmlConfig string, flags uint32) (*libvirt.StoragePool, error)
+	NetworkDefineXML(xmlConfig string) (*libvirt.Network, error)
 }
 
 // Provider contains the libvirt connection instance information.
@@ -78,10 +80,14 @@ func NewLibvirtProvider(config *config.Infra) (*Provider, error) {
 	if err != nil {
 		return nil, err
 	}
+	// We also add the generic resources for the machine. Storage and Network.
+	res := []resource{
+		newStoragePool(),
+		newNetwork(),
+	}
 	// We provision the infrastructure with the number of workers that the user
 	// specified. If there was no number of workers specified, we use the default
 	// (2).
-	var res []resources
 	for i := 0; i < config.Workers; i++ {
 		res = append(res, newDomainResource())
 	}
@@ -89,6 +95,6 @@ func NewLibvirtProvider(config *config.Infra) (*Provider, error) {
 	// NOTE: remember to refactor resource definition.
 	return &Provider{
 		Client:     conn,
-		Controller: newController(conn, res),
+		Controller: newController(conn, res...),
 	}, nil
 }

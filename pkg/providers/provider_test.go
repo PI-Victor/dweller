@@ -56,8 +56,8 @@ func newMockProvider(conf *config.Infra, err error) Provider {
 
 func TestNewInvalidProvider(t *testing.T) {
 	_, err := NewProvider(newMockConfig("invalidProvider"))
-	if err != ErrUnkownProvider {
-		t.Errorf("Expected error to be: %#v, got: %#v", ErrUnkownProvider, err)
+	if err != ErrUnknownProvider {
+		t.Errorf("Expected error to be: %#v, got: %#v", ErrUnknownProvider, err)
 	}
 }
 

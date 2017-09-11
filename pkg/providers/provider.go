@@ -25,8 +25,8 @@ import (
 
 var (
 	defaultProvider = "libvirt"
-	// ErrUnkownProvider is used for unsuported providers.
-	ErrUnkownProvider = errors.New("Unkown provider")
+	// ErrUnknownProvider is used for unsuported providers.
+	ErrUnknownProvider = errors.New("Unkown provider")
 )
 
 // Provider is an interface that all providers must implement in order to
@@ -61,7 +61,7 @@ func NewProvider(config *config.Infra) (Provider, error) {
 	if config.ProviderName == defaultProvider {
 		return libvirt.NewLibvirtProvider(config)
 	}
-	return nil, ErrUnkownProvider
+	return nil, ErrUnknownProvider
 }
 
 // Up will bring up a new infrastructure.

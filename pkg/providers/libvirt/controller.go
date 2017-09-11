@@ -20,45 +20,53 @@ import (
 	"sync"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/libvirt/libvirt-go-xml"
 )
 
 // Controller handles creation and deletion of libvirt resources.
 type Controller struct {
-	DomainResources  []resources
-	GenericResources []resources
-	client           Client
+	Resources []resource
+	client    Client
 }
 
-// Resources is an interface for libvirt domain resources
-type resources interface {
+// resource is an interface for libvirt domain resources
+type resource interface {
 	Marshal() (string, error)
 }
 
-func newController(client Client, domainRes []resources, genRes ...resources) *Controller {
+func newController(client Client, res ...resource) *Controller {
 	return &Controller{
-		DomainResources: domainRes,
-		client:          client,
+		Resources: res,
+		client:    client,
 	}
 }
 
 // CreateResources tries to create a new instance of a resource.
 func (c *Controller) CreateResources() error {
-	logrus.Debugf("Got here: %#v", c.DomainResources)
-	errChan := make(chan error, len(c.DomainResources))
+	errChan := make(chan error, len(c.Resources))
 	var wg sync.WaitGroup
 
-	for _, resource := range c.DomainResources {
+	for _, r := range c.Resources {
 		logrus.Info("Starting resource creation")
 		wg.Add(1)
-		go func(wg *sync.WaitGroup, res resources) {
+		go func(wg *sync.WaitGroup, res resource) {
 			defer wg.Done()
 			r, err := res.Marshal()
 			if err != nil {
 				errChan <- err
 			}
-			_, err = c.client.DomainDefineXML(r)
+
+			switch res.(type) {
+			case *libvirtxml.StoragePool:
+				logrus.Infof("Hey yo: %#v", res)
+				_, err = c.client.StoragePoolDefineXML(r, 0)
+			case *libvirtxml.Network:
+				_, err = c.client.NetworkDefineXML(r)
+			case *libvirtxml.Domain:
+				_, err = c.client.DomainDefineXML(r)
+			}
 			errChan <- err
-		}(&wg, resource)
+		}(&wg, r)
 	}
 	go func() {
 		wg.Wait()
@@ -69,18 +77,12 @@ func (c *Controller) CreateResources() error {
 		// NOTE: even if we return an error here, the available resources were
 		// already created. This is kinda pointless, we should just warn the user that
 		// the creation of the resource failed.
-		// When the connection pool is implemented it can have a retry with a different
+		// When the connection pool is implemented it can retry with a different
 		// connection.
 		if err != nil {
 			logrus.Warningf("Failed to instantiate resource: %#v", err)
 		}
 	}
-	return nil
-}
-
-// CreateGenericResources creates generic libvirt resources such as network and
-// storage pools.
-func (c *Controller) CreateGenericResources() error {
 	return nil
 }
 
