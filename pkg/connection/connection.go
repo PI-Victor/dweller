@@ -21,5 +21,5 @@ type ProviderConnection interface{}
 
 // Pool holds all available connections
 type Pool struct {
-	Connections []ProviderConnection
+	Connections map[int]*ProviderConnection
 }
