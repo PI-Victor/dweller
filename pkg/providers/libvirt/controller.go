@@ -58,7 +58,6 @@ func (c *Controller) CreateResources() error {
 
 			switch res.(type) {
 			case *libvirtxml.StoragePool:
-				logrus.Infof("Hey yo: %#v", res)
 				_, err = c.client.StoragePoolDefineXML(r, 0)
 			case *libvirtxml.Network:
 				_, err = c.client.NetworkDefineXML(r)
