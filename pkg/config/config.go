@@ -22,4 +22,6 @@ type Infra struct {
 	LibvirtURI   *string
 	ProviderName string
 	Workers      int
+
+	DomainName string
 }

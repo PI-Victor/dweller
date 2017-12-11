@@ -25,6 +25,8 @@ import (
 
 var (
 	defaultProvider = "libvirt"
+	xenProvisioner  = "xen"
+	qemuProvisioner = "qemu"
 	// ErrUnknownProvider is used for unsuported providers.
 	ErrUnknownProvider = errors.New("Unkown provider")
 )
@@ -32,11 +34,11 @@ var (
 // Provider is an interface that all providers must implement in order to
 // provision new Cloudflavor infrastructure.
 type Provider interface {
-	NewInfra(*config.Infra) error
-	HaltInfra(*config.Infra) error
-	RegisterInstances(*config.Infra) error
-	DestroyInstances(*config.Infra) error
-	ListInstances(*config.Infra) error
+	NewInfra() error
+	HaltInfra() error
+	RegisterInstances() error
+	DestroyInstances() error
+	ListInstances() error
 }
 
 // CloudInfra contains information about the provisioners that infra will be
@@ -66,7 +68,7 @@ func NewProvider(config *config.Infra) (Provider, error) {
 
 // Up will bring up a new infrastructure.
 func (cf *CloudInfra) Up() error {
-	if err := cf.Provider.NewInfra(cf.Config); err != nil {
+	if err := cf.Provider.NewInfra(); err != nil {
 		return err
 	}
 	return nil

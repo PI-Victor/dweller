@@ -27,22 +27,24 @@ var (
 	defaultSystemURI = "qemu:///system"
 )
 
-// Client interfaces the libvirt client.
-type Client interface {
+// QemuClient interfaces the libvirt client.
+type QemuClient interface {
 	DomainDefineXML(xmlConfig string) (*libvirt.Domain, error)
 	StoragePoolDefineXML(xmlConfig string, flags uint32) (*libvirt.StoragePool, error)
 	NetworkDefineXML(xmlConfig string) (*libvirt.Network, error)
+	ListAllNetworks(flags libvirt.ConnectListAllNetworksFlags) ([]libvirt.Network, error)
+	ListAllStoragePools(flags libvirt.ConnectListAllStoragePoolsFlags) ([]libvirt.StoragePool, error)
 }
 
-// Provider contains the libvirt connection instance information.
-type Provider struct {
-	Client     Client
+// QemuProvider contains the libvirt connection instance information.
+type QemuProvider struct {
+	Client     QemuClient
 	Controller controllers.ProviderController
 }
 
 // NewInfra creates a new cloudflavor infrastructure on top of qemu containing
 // 1xMaster and 2xWorker Nodes with attached.
-func (p *Provider) NewInfra(config *config.Infra) error {
+func (p *QemuProvider) NewInfra() error {
 	if err := p.Controller.CreateResources(); err != nil {
 		return err
 	}
@@ -50,28 +52,31 @@ func (p *Provider) NewInfra(config *config.Infra) error {
 }
 
 // RegisterInstances adds a new instance to the infrastructure.
-func (p *Provider) RegisterInstances(config *config.Infra) error {
+func (p *QemuProvider) RegisterInstances() error {
 	return nil
 }
 
 // DestroyInstances destroys a specific instance from the infrastructure.
-func (p *Provider) DestroyInstances(config *config.Infra) error {
+func (p *QemuProvider) DestroyInstances() error {
+	if err := p.Controller.DeleteResources(); err != nil {
+		return err
+	}
 	return nil
 }
 
 // HaltInfra halts the current running infrastructure. It can also pause the
 // current running infra and even destroy it if --destroy flag was passed.
-func (p *Provider) HaltInfra(config *config.Infra) error {
+func (p *QemuProvider) HaltInfra() error {
 	return nil
 }
 
 // ListInstances lists all the available instances for the provider.
-func (p *Provider) ListInstances(config *config.Infra) error {
+func (p *QemuProvider) ListInstances() error {
 	return nil
 }
 
 // NewLibvirtProvider creates a new libvirt provider with an active connection.
-func NewLibvirtProvider(config *config.Infra) (*Provider, error) {
+func NewLibvirtProvider(config *config.Infra) (*QemuProvider, error) {
 	if config.LibvirtURI == nil {
 		config.LibvirtURI = &defaultSystemURI
 	}
@@ -93,7 +98,7 @@ func NewLibvirtProvider(config *config.Infra) (*Provider, error) {
 	}
 
 	// NOTE: remember to refactor resource definition.
-	return &Provider{
+	return &QemuProvider{
 		Client:     conn,
 		Controller: newController(conn, res...),
 	}, nil

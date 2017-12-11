@@ -21,8 +21,6 @@ import (
 	"testing"
 
 	"github.com/libvirt/libvirt-go"
-
-	"github.com/cloudflavor/dweller/pkg/config"
 )
 
 var (
@@ -33,7 +31,11 @@ type mockLibvirtClient struct {
 	domain  *libvirt.Domain
 	pool    *libvirt.StoragePool
 	network *libvirt.Network
-	err     error
+
+	networks     []libvirt.Network
+	storagePools []libvirt.StoragePool
+	volumes      []libvirt.StorageVol
+	err          error
 }
 
 func (m *mockLibvirtClient) DomainDefineXML(xmlConfig string) (*libvirt.Domain, error) {
@@ -48,6 +50,16 @@ func (m *mockLibvirtClient) NetworkDefineXML(xmlConfig string) (*libvirt.Network
 	return m.network, m.err
 }
 
+// TODO: implement testing
+func (m *mockLibvirtClient) ListAllNetworks(flags libvirt.ConnectListAllNetworksFlags) ([]libvirt.Network, error) {
+	return []libvirt.Network{}, nil
+}
+
+// TODO: implement testing
+func (m *mockLibvirtClient) ListAllStoragePools(flags libvirt.ConnectListAllStoragePoolsFlags) ([]libvirt.StoragePool, error) {
+	return []libvirt.StoragePool{}, nil
+}
+
 func newMockLibvirtClient(domain *libvirt.Domain, err error) *mockLibvirtClient {
 	return &mockLibvirtClient{
 		domain: domain,
@@ -55,8 +67,8 @@ func newMockLibvirtClient(domain *libvirt.Domain, err error) *mockLibvirtClient 
 	}
 }
 
-func newMockLibvirtProvider(domain *libvirt.Domain, err error) *Provider {
-	return &Provider{
+func newMockLibvirtProvider(domain *libvirt.Domain, err error) *QemuProvider {
+	return &QemuProvider{
 		Client: newMockLibvirtClient(domain, err),
 	}
 }
@@ -64,7 +76,7 @@ func newMockLibvirtProvider(domain *libvirt.Domain, err error) *Provider {
 func TestLibvirtNewInfra(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
 	np.Controller = newFakeController(nil)
-	err := np.NewInfra(&config.Infra{})
+	err := np.NewInfra()
 	if err != nil {
 		t.Errorf("Did not expect an error, got: %#v", err)
 	}
@@ -73,7 +85,7 @@ func TestLibvirtNewInfra(t *testing.T) {
 func TestLibvirtNewInfraError(t *testing.T) {
 	np := newMockLibvirtProvider(nil, ErrTestLibvirt)
 	np.Controller = newFakeController(ErrTestLibvirt)
-	err := np.NewInfra(&config.Infra{})
+	err := np.NewInfra()
 	if err == nil {
 		t.Errorf("Expected error to be: %#v got nil", ErrTestLibvirt)
 	}
@@ -84,7 +96,7 @@ func TestLibvirtNewInfraError(t *testing.T) {
 
 func TestRegisterInstances(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
-	err := np.RegisterInstances(&config.Infra{})
+	err := np.RegisterInstances()
 	if err != nil {
 		t.Errorf("Did not expected an error, got: %#v", err)
 	}
@@ -92,7 +104,7 @@ func TestRegisterInstances(t *testing.T) {
 
 func TestDestroyInstances(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
-	err := np.DestroyInstances(&config.Infra{})
+	err := np.DestroyInstances()
 	if err != nil {
 		t.Errorf("Did not expected an error, got: %#v", err)
 	}
@@ -100,7 +112,7 @@ func TestDestroyInstances(t *testing.T) {
 
 func TestHaltInfra(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
-	err := np.HaltInfra(&config.Infra{})
+	err := np.HaltInfra()
 	if err != nil {
 		t.Errorf("Did not expected an error, got: %#v", err)
 	}
@@ -108,7 +120,7 @@ func TestHaltInfra(t *testing.T) {
 
 func TestListInstances(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
-	err := np.ListInstances(&config.Infra{})
+	err := np.ListInstances()
 	if err != nil {
 		t.Errorf("Did not expected an error, got: %#v", err)
 	}

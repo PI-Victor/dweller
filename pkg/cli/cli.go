@@ -32,6 +32,7 @@ var (
 	infraProvider    string
 	masterIP         string
 	virtProvisioner  string
+	domainName       string
 )
 
 // UpCommand provisines a basic cluster infrastructure.
@@ -71,6 +72,18 @@ var DeleteCommand = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete a specific instance",
 	Run: func(cmd *cobra.Command, args []string) {
+		conf := &config.Infra{
+			LibvirtURI:   &infraProviderURI,
+			ProviderName: infraProvider,
+			DomainName:   domainName,
+		}
+		prov, err := provider.NewProvider(conf)
+		if err != nil {
+			logrus.Fatalf("Error while accessing provider: %#v", err)
+		}
+		if err := prov.DestroyInstances(); err != nil {
+			logrus.Fatalf("Error while destroying instance: %#v", err)
+		}
 	},
 }
 
@@ -80,6 +93,27 @@ var HaltCommand = &cobra.Command{
 	Use:   "halt",
 	Short: "Halts the currently running infrastructure",
 	Run: func(cmd *cobra.Command, args []string) {
+	},
+}
+
+// ListCommand lists the current defined and attached domains.
+var ListCommand = &cobra.Command{
+	Use:   "list",
+	Short: "List available domains",
+	Run: func(cmd *cobra.Command, args []string) {
+		conf := &config.Infra{
+			LibvirtURI:   &infraProviderURI,
+			ProviderName: infraProvider,
+			DomainName:   domainName,
+		}
+		prov, err := provider.NewProvider(conf)
+		if err != nil {
+			logrus.Fatalf("Error while accessing provider: %#v", err)
+		}
+		err = prov.ListInstances()
+		if err != nil {
+			logrus.Fatalf("Failed to list instances :%#v", err)
+		}
 	},
 }
 

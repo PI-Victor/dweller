@@ -26,7 +26,7 @@ import (
 // Controller handles creation and deletion of libvirt resources.
 type Controller struct {
 	Resources []resource
-	client    Client
+	client    QemuClient
 }
 
 // resource is an interface for libvirt domain resources
@@ -34,7 +34,7 @@ type resource interface {
 	Marshal() (string, error)
 }
 
-func newController(client Client, res ...resource) *Controller {
+func newController(client QemuClient, res ...resource) *Controller {
 	return &Controller{
 		Resources: res,
 		client:    client,
@@ -86,7 +86,12 @@ func (c *Controller) CreateResources() error {
 }
 
 // DeleteResources selectively deletes resources either specific to domain
-// definition or generic resources such as network and storage-pool
+// definition or generic resources such as network and storage-pool.
 func (c *Controller) DeleteResources() error {
+	return nil
+}
+
+// ListResources will list all the available (active and inactive) domain resources.
+func (c *Controller) ListResources() error {
 	return nil
 }

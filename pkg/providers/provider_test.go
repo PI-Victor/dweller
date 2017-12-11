@@ -33,11 +33,11 @@ type mockProvider struct {
 	err          error
 }
 
-func (m *mockProvider) NewInfra(c *config.Infra) error          { return m.err }
-func (m *mockProvider) HaltInfra(c *config.Infra) error         { return m.err }
-func (m *mockProvider) RegisterInstances(c *config.Infra) error { return m.err }
-func (m *mockProvider) DestroyInstances(c *config.Infra) error  { return m.err }
-func (m *mockProvider) ListInstances(c *config.Infra) error     { return m.err }
+func (m *mockProvider) NewInfra() error          { return m.err }
+func (m *mockProvider) HaltInfra() error         { return m.err }
+func (m *mockProvider) RegisterInstances() error { return m.err }
+func (m *mockProvider) DestroyInstances() error  { return m.err }
+func (m *mockProvider) ListInstances() error     { return m.err }
 
 func newMockConfig(prov string) *config.Infra {
 	lvURI := "qemu:///sytem"
