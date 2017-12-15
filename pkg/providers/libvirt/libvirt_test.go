@@ -99,7 +99,7 @@ func TestRegisterInstances(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
 	err := np.RegisterInstances()
 	if err != nil {
-		t.Errorf("Did not expected an error, got: %#v", err)
+		t.Errorf("Did not expect an error, got: %#v", err)
 	}
 }
 
@@ -107,7 +107,7 @@ func TestDestroyInstances(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
 	err := np.DestroyInstances()
 	if err != nil {
-		t.Errorf("Did not expected an error, got: %#v", err)
+		t.Errorf("Did not expect an error, got: %#v", err)
 	}
 }
 
@@ -115,7 +115,7 @@ func TestHaltInfra(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
 	err := np.HaltInfra()
 	if err != nil {
-		t.Errorf("Did not expected an error, got: %#v", err)
+		t.Errorf("Did not expect an error, got: %#v", err)
 	}
 }
 
@@ -123,6 +123,6 @@ func TestListInstances(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
 	err := np.ListInstances()
 	if err != nil {
-		t.Errorf("Did not expected an error, got: %#v", err)
+		t.Errorf("Did not expect an error, got: %#v", err)
 	}
 }
