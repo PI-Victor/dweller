@@ -22,6 +22,7 @@ import (
 	"testing"
 
 	"github.com/cloudflavor/dweller/pkg/config"
+	"github.com/cloudflavor/dweller/pkg/providers/controllers"
 )
 
 var (
@@ -31,6 +32,7 @@ var (
 type mockProvider struct {
 	ProviderName string
 	err          error
+	Controller   controllers.ProviderController
 }
 
 func (m *mockProvider) NewInfra() error          { return m.err }
@@ -38,6 +40,13 @@ func (m *mockProvider) HaltInfra() error         { return m.err }
 func (m *mockProvider) RegisterInstances() error { return m.err }
 func (m *mockProvider) DestroyInstances() error  { return m.err }
 func (m *mockProvider) ListInstances() error     { return m.err }
+
+type mockController struct {
+	err error
+}
+
+func (m *mockController) CreateResources() error { return m.err }
+func (m *mockController) DeleteResources() error { return m.err }
 
 func newMockConfig(prov string) *config.Infra {
 	lvURI := "qemu:///sytem"
@@ -47,10 +56,15 @@ func newMockConfig(prov string) *config.Infra {
 	}
 }
 
+func newMockController() controllers.ProviderController {
+	return &mockController{}
+}
+
 func newMockProvider(conf *config.Infra, err error) Provider {
 	return &mockProvider{
 		ProviderName: conf.ProviderName,
 		err:          err,
+		Controller:   newMockController(),
 	}
 }
 

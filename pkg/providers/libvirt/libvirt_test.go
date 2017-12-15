@@ -69,7 +69,8 @@ func newMockLibvirtClient(domain *libvirt.Domain, err error) *mockLibvirtClient 
 
 func newMockLibvirtProvider(domain *libvirt.Domain, err error) *QemuProvider {
 	return &QemuProvider{
-		Client: newMockLibvirtClient(domain, err),
+		Client:     newMockLibvirtClient(domain, err),
+		Controller: &Controller{},
 	}
 }
 
