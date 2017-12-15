@@ -1,0 +1,16 @@
+---
+infraProvider: libvirt
+
+connectionPool:
+  uri:
+  - "qemu:///system"
+  - "qemu:///system"
+workersCount: 3
+
+masterNodeSpec:
+  memory: 1024
+  vCPUs: 2
+
+workerNodeSpec:
+  memory: 2048
+  vCPUs: 4
