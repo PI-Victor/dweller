@@ -14,16 +14,4 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package config
-
-// Infra contains generic configuration that is used by the infrastructure.
-type Infra struct {
-	LibvirtURI   *string
-	ProviderName string
-	Workers      int
-
-	DomainName  string
-	NetworkName string
-	SecretName  string
-	DeviceName  string
-}
+package digitalocean

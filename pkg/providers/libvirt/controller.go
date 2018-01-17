@@ -74,10 +74,9 @@ func (c *Controller) CreateResources() error {
 
 	for err := range errChan {
 		// NOTE: even if we return an error here, the available resources were
-		// already created. This is kinda pointless, we should just warn the user that
-		// the creation of the resource failed.
-		// When the connection pool is implemented it can retry with a different
-		// connection.
+		// already created. This is kinda pointless, we should just warn the user
+		// that the creation of the resource failed. When the connection pool is
+		// implemented it can retry with a different connection.
 		if err != nil {
 			logrus.Warningf("Failed to instantiate resource: %#v", err)
 		}
@@ -91,7 +90,8 @@ func (c *Controller) DeleteResources() error {
 	return nil
 }
 
-// ListResources will list all the available (active and inactive) domain resources.
+// ListResources will list all the available (active and inactive) domain
+// resources.
 func (c *Controller) ListResources() error {
 	return nil
 }

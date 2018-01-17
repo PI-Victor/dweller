@@ -20,35 +20,35 @@ import (
 	"testing"
 )
 
-type fakeController struct {
+type mockController struct {
 	err error
 }
 
-func (f *fakeController) CreateResources() error {
+func (f *mockController) CreateResources() error {
 	return f.err
 }
 
-func (f *fakeController) DeleteResources() error {
+func (f *mockController) DeleteResources() error {
 	return f.err
 }
 
-func newFakeController(err error) *fakeController {
-	return &fakeController{
+func newmockController(err error) *mockController {
+	return &mockController{
 		err: err,
 	}
 }
 
-type fakeResource struct {
+type mockResource struct {
 	testString string
 	err        error
 }
 
-func (f *fakeResource) Marshal() (string, error) {
+func (f *mockResource) Marshal() (string, error) {
 	return f.testString, f.err
 }
 
-func newFakeResource() fakeResource {
-	return fakeResource{}
+func newmockResource() mockResource {
+	return mockResource{}
 }
 
 func newMockLibvirtController(err error, res ...resource) *Controller {

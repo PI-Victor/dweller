@@ -76,7 +76,7 @@ func newMockLibvirtProvider(domain *libvirt.Domain, err error) *QemuProvider {
 
 func TestLibvirtNewInfra(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
-	np.Controller = newFakeController(nil)
+	np.Controller = newmockController(nil)
 	err := np.NewInfra()
 	if err != nil {
 		t.Errorf("Did not expect an error, got: %#v", err)
@@ -85,7 +85,7 @@ func TestLibvirtNewInfra(t *testing.T) {
 
 func TestLibvirtNewInfraError(t *testing.T) {
 	np := newMockLibvirtProvider(nil, ErrTestLibvirt)
-	np.Controller = newFakeController(ErrTestLibvirt)
+	np.Controller = newmockController(ErrTestLibvirt)
 	err := np.NewInfra()
 	if err == nil {
 		t.Errorf("Expected error to be: %#v got nil", ErrTestLibvirt)
@@ -97,15 +97,15 @@ func TestLibvirtNewInfraError(t *testing.T) {
 
 func TestRegisterInstances(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
-	err := np.RegisterInstances()
+	err := np.NewInstance()
 	if err != nil {
 		t.Errorf("Did not expect an error, got: %#v", err)
 	}
 }
 
-func TestDestroyInstances(t *testing.T) {
+func TestDestroyInstance(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
-	err := np.DestroyInstances()
+	err := np.DestroyInstance()
 	if err != nil {
 		t.Errorf("Did not expect an error, got: %#v", err)
 	}

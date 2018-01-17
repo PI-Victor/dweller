@@ -41,6 +41,8 @@ var UpCommand = &cobra.Command{
 	Short: "Bring up a simple Cloudflavor infrastructure ",
 	Example: `dw up - Starts a basic Cloudflavor infrastructure with the default
 provider, libvirt. It will provision 3 machines - two workers and a master node.
+That means that it will allocate more memory to the worker nodes and less to the
+master. However, the default can be overriden in the settings.yaml file.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		conf := &config.Infra{
@@ -81,7 +83,7 @@ var DeleteCommand = &cobra.Command{
 		if err != nil {
 			logrus.Fatalf("Error while accessing provider: %#v", err)
 		}
-		if err := prov.DestroyInstances(); err != nil {
+		if err := prov.DestroyInstance(); err != nil {
 			logrus.Fatalf("Error while destroying instance: %#v", err)
 		}
 	},

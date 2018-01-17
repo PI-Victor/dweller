@@ -51,13 +51,13 @@ func (p *QemuProvider) NewInfra() error {
 	return nil
 }
 
-// RegisterInstances adds a new instance to the infrastructure.
-func (p *QemuProvider) RegisterInstances() error {
+// NewInstance adds a new instance to the infrastructure.
+func (p *QemuProvider) NewInstance() error {
 	return nil
 }
 
-// DestroyInstances destroys a specific instance from the infrastructure.
-func (p *QemuProvider) DestroyInstances() error {
+// DestroyInstance destroys a specific instance from the infrastructure.
+func (p *QemuProvider) DestroyInstance() error {
 	if err := p.Controller.DeleteResources(); err != nil {
 		return err
 	}
