@@ -83,7 +83,7 @@ var DeleteCommand = &cobra.Command{
 		if err != nil {
 			logrus.Fatalf("Error while accessing provider: %#v", err)
 		}
-		if err := prov.DestroyInstance(); err != nil {
+		if err := prov.DestroyInstances(); err != nil {
 			logrus.Fatalf("Error while destroying instance: %#v", err)
 		}
 	},

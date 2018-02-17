@@ -57,7 +57,7 @@ func (p *QemuProvider) NewInstance() error {
 }
 
 // DestroyInstance destroys a specific instance from the infrastructure.
-func (p *QemuProvider) DestroyInstance() error {
+func (p *QemuProvider) DestroyInstances() error {
 	if err := p.Controller.DeleteResources(); err != nil {
 		return err
 	}
@@ -72,6 +72,11 @@ func (p *QemuProvider) HaltInfra() error {
 
 // ListInstances lists all the available instances for the provider.
 func (p *QemuProvider) ListInstances() error {
+	return nil
+}
+
+// RegisterInstances registers new instances into the cluster
+func (p *QemuProvider) RegisterInstances() error {
 	return nil
 }
 
