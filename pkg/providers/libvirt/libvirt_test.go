@@ -105,7 +105,7 @@ func TestRegisterInstances(t *testing.T) {
 
 func TestDestroyInstance(t *testing.T) {
 	np := newMockLibvirtProvider(nil, nil)
-	err := np.DestroyInstance()
+	err := np.DestroyInstances()
 	if err != nil {
 		t.Errorf("Did not expect an error, got: %#v", err)
 	}
