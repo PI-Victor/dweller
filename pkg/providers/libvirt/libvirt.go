@@ -56,7 +56,7 @@ func (p *QemuProvider) NewInstance() error {
 	return nil
 }
 
-// DestroyInstance destroys a specific instance from the infrastructure.
+// DestroyInstances destroys a specific instance from the infrastructure.
 func (p *QemuProvider) DestroyInstances() error {
 	if err := p.Controller.DeleteResources(); err != nil {
 		return err

@@ -16,3 +16,13 @@ Sets up the `Cloudflavor` infrastructure on different providers. Currently
 The default provisioning is 1xMaster and 2xWorkers but the default number of
 workers can be overridden. The infrastructure scales horizontally across
 multiple machines that have `qemu or xen` installed.  
+
+
+#### Building
+
+Running `make` in the root directory will create the binary in `_output/bin/dw`.
+
+
+#### Architecture
+
+![dweller arch](assets/dweller-cloudflavor.png)
