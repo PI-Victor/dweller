@@ -4,8 +4,8 @@
 [[projects]]
   name = "github.com/Sirupsen/logrus"
   packages = ["."]
-  revision = "f006c2ac4710855cf0f916dd6b77acf6b048dc6e"
-  version = "v1.0.3"
+  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
+  version = "v1.0.5"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -16,20 +16,20 @@
 [[projects]]
   name = "github.com/libvirt/libvirt-go"
   packages = ["."]
-  revision = "664b6d217e029ce5ad3094a8c2202c202b213d06"
-  version = "v3.5.0"
+  revision = "d0e4392dfcc5489797a5f875cc3355b255612a18"
+  version = "v4.2.0"
 
 [[projects]]
-  branch = "master"
   name = "github.com/libvirt/libvirt-go-xml"
   packages = ["."]
-  revision = "83a754119fc7239caffd1f50e08cb13b1b3825ef"
+  revision = "5f9fae2df1fe73edd9fc80983d7f44db61f7088d"
+  version = "v4.1.0"
 
 [[projects]]
-  branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "3c0b56b677e04926dfa835a1b3f11cd4f62f076e"
+  revision = "a1f051bc3eba734da4772d60e2d677f47cf93ef4"
+  version = "v0.0.2"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -41,17 +41,20 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "81e90905daefcd6fd217b62423c0908922eadb30"
+  revision = "b2aa35443fbc700ab74c586ae79b81c171851023"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix","windows"]
-  revision = "7ddbeae9ae08c6a06a59597f0c9edbc5ff2444ce"
+  packages = [
+    "unix",
+    "windows"
+  ]
+  revision = "3b87a42e500a6dc65dae1a55d0b641295971163e"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "27a3921566fffa298a8b10a70fdadc59fd12231a8b1bd947a43e695a467e75bf"
+  inputs-digest = "a2e7f825e37f45bfa8631b2d4e29295221b99392a102f1495e961e49291c6a32"
   solver-name = "gps-cdcl"
   solver-version = 1
