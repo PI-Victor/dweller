@@ -23,7 +23,7 @@ import (
 func newStoragePool() *libvirtxml.StoragePool {
 	return &libvirtxml.StoragePool{
 		Type: "dir",
-		Name: "cloudflavor-infra-pool",
+		Name: "cloudflavor-pool",
 		Allocation: &libvirtxml.StoragePoolSize{
 			Unit:  "MB",
 			Value: 10000,
@@ -32,13 +32,37 @@ func newStoragePool() *libvirtxml.StoragePool {
 			Unit:  "MB",
 			Value: 10000,
 		},
+		Source: &libvirtxml.StoragePoolSource{
+			Dir: &libvirtxml.StoragePoolSourceDir{
+				Path: "/var/lib/libvirt/images/cloudflavor-pool",
+			},
+		},
 		Target: &libvirtxml.StoragePoolTarget{
-			// NOTE: this should be dinamic.
+			// NOTE: this should be dynamic.
 			Path: "/var/lib/libvirt/images/cloudflavor-pool",
+		},
+		Available: &libvirtxml.StoragePoolSize{
+			Unit:  "MB",
+			Value: 10000,
+		},
+	}
+}
+
+func newStorageVolume() *libvirtxml.StorageVolume {
+	return &libvirtxml.StorageVolume{
+		Name: "test-volume",
+		Allocation: &libvirtxml.StorageVolumeSize{
+			Unit:  "MB",
+			Value: 10000,
+		},
+		Target: &libvirtxml.StorageVolumeTarget{
+			Path: "/var/lib/libvirt/images/iso/test-volume",
 		},
 	}
 }
 
 func newNetwork() *libvirtxml.Network {
-	return &libvirtxml.Network{}
+	return &libvirtxml.Network{
+		Name: "test-network",
+	}
 }

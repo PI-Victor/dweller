@@ -93,7 +93,8 @@ func NewLibvirtProvider(config *config.Infra) (*QemuProvider, error) {
 	// We also add the generic resources for the machine. Storage and Network.
 	res := []resource{
 		newStoragePool(),
-		newNetwork(),
+		newStorageVolume(),
+		//newNetwork(),
 	}
 	// We provision the infrastructure with the number of workers that the user
 	// specified. If there was no number of workers specified, we use the default

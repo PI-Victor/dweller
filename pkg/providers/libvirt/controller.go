@@ -17,6 +17,7 @@ limitations under the License.
 package libvirt
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/Sirupsen/logrus"
@@ -47,23 +48,31 @@ func (c *Controller) CreateResources() error {
 	var wg sync.WaitGroup
 
 	for _, r := range c.Resources {
-		logrus.Info("Starting resource creation")
 		wg.Add(1)
 		go func(wg *sync.WaitGroup, res resource) {
 			defer wg.Done()
 			r, err := res.Marshal()
+
 			if err != nil {
-				errChan <- err
+				errChan <- fmt.Errorf("Failed to unmarshal resource: %s", err)
 			}
 
 			switch res.(type) {
 			case *libvirtxml.StoragePool:
+				logrus.Infof("Creating cluster resource storage pool")
+				logrus.Debugf("this is the storage resource: %#v", r)
 				_, err = c.client.StoragePoolDefineXML(r, 0)
+				err = fmt.Errorf("Storage resource failed to create: %#v", err)
 			case *libvirtxml.Network:
+				logrus.Infof("Creating cluster network")
 				_, err = c.client.NetworkDefineXML(r)
+				err = fmt.Errorf("Network resource failed to create: %#v", err)
 			case *libvirtxml.Domain:
+				logrus.Infof("Creating domain resource")
 				_, err = c.client.DomainDefineXML(r)
+				err = fmt.Errorf("Domain resource failed to create: %#v, resource: %#v", err, r)
 			}
+
 			errChan <- err
 		}(&wg, r)
 	}
@@ -75,10 +84,9 @@ func (c *Controller) CreateResources() error {
 	for err := range errChan {
 		// NOTE: even if we return an error here, the available resources were
 		// already created. This is kinda pointless, we should just warn the user
-		// that the creation of the resource failed. When the connection pool is
-		// implemented it can retry with a different connection.
+		// that the creation of the resource failed.
 		if err != nil {
-			logrus.Warningf("Failed to instantiate resource: %#v", err)
+			logrus.Warningf("Failed to create resource: %s", err)
 		}
 	}
 	return nil

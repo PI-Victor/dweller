@@ -52,7 +52,7 @@ master. However, the default can be overriden in the settings.yaml file.
 		}
 		prov, err := provider.NewProvider(conf)
 		if err != nil {
-			logrus.Fatalf("Error occurred while creating a new provider: %#v", err)
+			logrus.Fatalf("Error occurred while creating a new provider: %s", err)
 		}
 		infra := provider.NewInfra(prov, conf)
 		if err = infra.Up(); err != nil {

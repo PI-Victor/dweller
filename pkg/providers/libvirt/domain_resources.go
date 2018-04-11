@@ -25,9 +25,9 @@ var (
 	defaultDomainType      = "qemu"
 	defaultDomainOSType    = "hvm"
 	defaultDomainOSMachine = "pc"
-	defaultOSSourceFile    = "/var/lib/libvirt/images/armetOS-0-1.x86_64.qcow2"
+	defaultOSSourceFile    = "/var/lib/libvirt/images/iso/Fedora-Cloud-Base-27-1.6.x86_64.qcow2"
 	// NOTE: till ArmetOS qcow2 is ready, use a default image from fedora cloud
-	tmpOSSOurceFile                 = "/var/lib/libvirt/images/fedora25.qcow2"
+	tmpOSSOurceFile                 = "/var/lib/libvirt/images/iso/Fedora-Cloud-Base-27-1.6.x86_64.qcow2"
 	defaultCurrentMemory       uint = 1024
 	defaultMaxMemory           uint = 4096
 	defaultAttachedStorageSize      = "40GB"
@@ -78,11 +78,12 @@ func newDomainDiskResource(master bool) []libvirtxml.DomainDisk {
 					Name: "qemu",
 					Type: "qcow2",
 				},
-				Type:   "file",
 				Device: "disk",
 				Source: &libvirtxml.DomainDiskSource{
 					// NOTE: remember to change this to a working armetOS qcow2 file.
-					File: tmpOSSOurceFile,
+					Dir: &libvirtxml.DomainDiskSourceDir{
+						Dir: "/var/lib/libvirt/images/",
+					},
 				},
 				Target: &libvirtxml.DomainDiskTarget{
 					Dev: "vda",
@@ -94,14 +95,6 @@ func newDomainDiskResource(master bool) []libvirtxml.DomainDisk {
 					Name: "qemu",
 					Type: "raw",
 				},
-				Type:   "volume",
-				Device: "disk",
-				Source: &libvirtxml.DomainDiskSource{
-					Name: "test-disk",
-					// TODO: only for testing - change this to a created pool
-					Pool:   "cloudflavor-infra-pool",
-					Volume: "test-volume",
-				},
 			},
 		}
 	}
@@ -112,11 +105,12 @@ func newDomainDiskResource(master bool) []libvirtxml.DomainDisk {
 				Name: "qemu",
 				Type: "qcow2",
 			},
-			Type:   "file",
 			Device: "disk",
 			Source: &libvirtxml.DomainDiskSource{
 				// NOTE: remember to change this to a working armetOS qcow2 file.
-				File: tmpOSSOurceFile,
+				File: &libvirtxml.DomainDiskSourceFile{
+					File: "/var/lib/libvirt/images/iso/Fedora-Cloud-Base-27-1.6.x86_64.qcow2",
+				},
 			},
 			Target: &libvirtxml.DomainDiskTarget{
 				Dev: "vda",
@@ -131,8 +125,7 @@ func newDomainDevicesResource(isMaster bool) *libvirtxml.DomainDeviceList {
 		Disks: newDomainDiskResource(isMaster),
 		Graphics: []libvirtxml.DomainGraphic{
 			{
-				Type:     "spice",
-				AutoPort: "yes",
+				Spice: &libvirtxml.DomainGraphicSpice{},
 			},
 		},
 	}
@@ -147,7 +140,7 @@ func newDomainOSResource() *libvirtxml.DomainOS {
 			Machine: defaultDomainOSMachine,
 		},
 		BootMenu: &libvirtxml.DomainBootMenu{
-			Enabled: defaultEnabledBootMenu,
+			Enable:  defaultEnabledBootMenu,
 			Timeout: defaultTimeoutBootMenu,
 		},
 	}
