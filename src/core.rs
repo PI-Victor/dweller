@@ -1,5 +1,4 @@
-use configuration::{Configuration};
-
+use configuration::Configuration;
 
 pub trait Provider {
   fn bootstrap_cluster(&self);
@@ -20,6 +19,4 @@ pub trait Node {
   fn status(&self);
 }
 
-pub fn bootstrap(config: Configuration) {
-  
-}
+pub fn bootstrap(config: Configuration) {}

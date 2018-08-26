@@ -1,8 +1,6 @@
 extern crate config;
 
-
-use config::{ConfigError, Config, File, Environment};
-
+use config::{Config, ConfigError, Environment, File};
 
 #[derive(Debug, Deserialize)]
 pub struct Configuration {
@@ -24,10 +22,10 @@ pub struct Libvirt {
 pub struct Node {}
 
 impl Configuration {
-    pub fn new(path: &str) -> Result<Self, ConfigError> {
-        let mut c = Config::new();
-        c.merge(File::with_name(path))?;
-        c.merge(Environment::with_prefix("DWELLER"))?;
-        c.try_into()
-    }
+  pub fn new(path: &str) -> Result<Self, ConfigError> {
+    let mut c = Config::new();
+    c.merge(File::with_name(path))?;
+    c.merge(Environment::with_prefix("DWELLER"))?;
+    c.try_into()
+  }
 }
