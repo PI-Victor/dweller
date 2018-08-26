@@ -1,2 +1,4 @@
 _output
 coverage.txt
+/target
+**/*.rs.bk
