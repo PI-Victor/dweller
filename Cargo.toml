@@ -1,13 +1,14 @@
 [package]
-name = "dweller"
-version = "0.1.0-alpha"
-authors = ["Cloudflavor Org <victor@cloudflavor.io>"]
+name = "moai"
+version = "0.1.0"
+authors = ["Victor Palade <victor.palade@cloudflavor.io>"]
+edition = "2018"
 
 [dependencies]
-clap = "~2.33.0"
-config = "~0.9"
-serde = "~1.0"
-serde_derive = "~1.0"
-serde_yaml = "~0.8.9"
-slog = "~2.4.1"
-slog-json = "~2.3.0"
+libvirt = "0.1.0"
+clap = "2.33.0"
+config = "0.9.3"
+serde = "1.0.98"
+serde_derive = "1.0.98"
+log = "0.4.8"
+env_logger = "0.6.2"
