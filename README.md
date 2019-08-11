@@ -1,4 +1,12 @@
+
+<div>
+<img src="./assets/moai.png" width="80">
+</div> 
+
 moai
 ---
-moai manages private infrastructure. 
+
+A CLI that manages libvirt infrastructure. 
+
+
 
