@@ -1,0 +1,32 @@
+---
+kind: Cluster
+resources:
+  network: network1
+  pool: pool1
+  machines:
+  - vm1
+  - vm2
+  - vm3
+---
+kind: Machine
+metadata:
+  name: vm1
+  label: vm1
+spec:
+  hypervisor: kvm
+  resources:
+    vcpu: 2
+    memory: 1500
+---
+kind: Network
+metadata:
+  name: network1
+  label: network1
+spec:
+  type: bridge
+---
+kind: Pool
+metadata:
+  name: pool1
+  label: pool1
+spec:
