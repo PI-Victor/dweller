@@ -1,4 +1,4 @@
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Libvirt {
     pub uri: String
 }

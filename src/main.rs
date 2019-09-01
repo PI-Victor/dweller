@@ -6,16 +6,16 @@ extern crate serde_derive;
 extern crate log;
 extern crate env_logger;
 extern crate failure;
+extern crate futures;
 
 mod util;
-mod providers;
+mod api;
 
 use clap::{App, AppSettings, Arg, SubCommand};
 
 use util::open_file;
 
 const VERSION: &str = "v0.1.0-alpha";
-
 const ASCIIART: &str = r#"
                        _ 
                       (_) 
@@ -76,16 +76,32 @@ fn main() {
         .filter(Some(module_path!()), log_level)
         .init();
 
-    let mut file_path = matches.value_of("filename");
-
-    match matches.subcommand_name().unwrap() {
-        "create" => create_resources(file_path.unwrap()),
-        "apply" => debug!("apply"),
-        "delete" => debug!("delete"),
+    match matches.subcommand() {
+        ("create", Some(cmd)) => {
+            let filename = cmd.value_of("filename").unwrap();
+            create_resources(&filename);
+        },
+        ("apply", Some(cmd)) => {
+            let filename = cmd.value_of("filename").unwrap();
+            modify_resources(&filename);
+        },
+        ("delete", Some(cmd)) => {
+            let filename = cmd.value_of("filename").unwrap();
+            delete_resources(&filename);
+        },
         _ => ()
     }
 }
 
 fn create_resources(file_path: &str) {
-    let deserialize = open_file(file_path).unwrap();
+    let contents = open_file(file_path.to_string());
+    
+}
+
+fn delete_resources(_file_path: &str) {
+    
+}
+
+fn modify_resources(_file_path: &str) {
+
 }
